@@ -1,8 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -11,7 +16,14 @@ const app = express();
 app.set("trust proxy", 1);
 
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static("public")); // jalan normal untuk lokal (npm start)
+
+// Vercel SENGAJA mengabaikan express.static() (lihat docs resminya),
+// jadi "/" perlu route eksplisit yang kirim index.html langsung —
+// kalau cuma andalkan static middleware, hasilnya "Cannot GET /" di Vercel.
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // ─── Rate limiting ───
 // Lapisan umum: batasi semua endpoint /api supaya tidak bisa di-spam.
