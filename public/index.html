@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
+<title>Muara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.11/purify.min.js"></script>
+<link rel="stylesheet" href="/public/css/style.css">
+
+</head>
+<body>
+
+<div class="backdrop" id="backdrop"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <span class="eyebrow" data-i18n="sidebarEyebrow">Riwayat Chat</span>
+    <div class="sidebar-header-right">
+      <span class="soon-badge" data-i18n="sidebarSoon">Soon</span>
+      <button class="icon-btn-sm" id="sidebarClose" aria-label="Tutup">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="sidebar-empty">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="M12 7v5l3.5 2"></path>
+    </svg>
+    <p data-i18n="sidebarMsg1">Fitur riwayat chat masih dalam pengembangan.</p>
+    <p class="mute" data-i18n="sidebarMsg2">Nanti kamu bisa membuka lagi percakapan lama dari sini.</p>
+  </div>
+</aside>
+
+<div class="app-shell">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="icon-btn" id="sidebarToggle" aria-label="Buka riwayat chat"></button>
+      <div class="brand"><span class="brand-icon" id="brandIcon"></span><span class="full">MUARA</span></div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="icon-btn" id="newChatBtn" hidden></button>
+      <button class="icon-btn" id="loginBtn"></button>
+      <div class="lang-switch" id="langSwitch">
+        <span class="globe"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 0 0 0 18M12.5 3a17 17 0 0 1 0 18"/></svg></span>
+        <button type="button" class="lang-opt active" data-lang="id">ID</button>
+        <button type="button" class="lang-opt" data-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="emptyState">
+      <div class="greeting-wrap">
+        <h1 id="greeting">Selamat datang</h1>
+        <p class="greeting-sub" data-i18n="subtitle">Pilih model di kotak pesan, lalu mulai obrolan kamu.</p>
+      </div>
+
+      <form class="input-bar" id="formEmpty">
+        <div class="model-pill-wrap">
+          <button type="button" class="model-pill" id="modelPillEmpty">
+            <span class="icon" id="modelIconEmpty"></span>
+            <span class="label" id="modelLabelEmpty">…</span>
+            <svg class="caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </button>
+          <div class="model-dropdown" id="modelDropdownEmpty"></div>
+        </div>
+        <input type="text" id="inputEmpty" data-i18n-placeholder="inputPlaceholder" placeholder="Tulis pesan..." autocomplete="off" />
+        <button type="submit" class="send-btn" aria-label="Kirim">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 19V5M5 12l7-7 7 7"></path>
+          </svg>
+        </button>
+      </form>
+      <p class="guest-quota" id="guestQuotaEmpty"></p>
+
+      <div class="code-section">
+        <span class="eyebrow" data-i18n="codeEyebrow">Sedikit Kode dari Project Ini</span>
+        <div class="term-window">
+          <div class="term-titlebar">
+            <span class="term-filename">server.js</span>
+            <div class="term-controls">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"></path></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="1.5"></rect></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+            </div>
+          </div>
+          <pre class="term-body" id="termBody"></pre>
+        </div>
+      </div>
+
+      <div class="news-section">
+        <span class="eyebrow" data-i18n="newsEyebrow">Berita Hari Ini</span>
+        <div class="news-grid" id="newsGrid"></div>
+      </div>
+    </section>
+
+    <section id="chatState">
+      <div class="meteor-layer" id="meteorLayer"></div>
+      <div id="chatMessages"></div>
+      <div class="input-bar-bottom-wrap">
+        <form class="input-bar" id="formBottom">
+          <div class="model-pill-wrap">
+            <button type="button" class="model-pill" id="modelPillBottom">
+              <span class="icon" id="modelIconBottom"></span>
+              <span class="label" id="modelLabelBottom">…</span>
+              <svg class="caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <path d="M6 9l6 6 6-6"></path>
+              </svg>
+            </button>
+            <div class="model-dropdown dropdown-up" id="modelDropdownBottom"></div>
+          </div>
+          <input type="text" id="inputBottom" data-i18n-placeholder="inputPlaceholder" placeholder="Tulis pesan..." autocomplete="off" />
+          <button type="submit" class="send-btn" aria-label="Kirim">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M12 19V5M5 12l7-7 7 7"></path>
+            </svg>
+          </button>
+        </form>
+        <p class="guest-quota" id="guestQuotaBottom"></p>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="/public/js/script.js"></script>
+
+</body>
+</html>
